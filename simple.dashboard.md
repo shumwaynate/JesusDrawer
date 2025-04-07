@@ -7,7 +7,7 @@ execute:
 ---
 
 
-::: {#1176488d .cell fig-height='4' fig-width='14' execution_count=1}
+::: {#5592f84f .cell fig-height='4' fig-width='14' execution_count=1}
 
 ::: {.cell-output .cell-output-stdout}
 ```
@@ -22,7 +22,7 @@ execute:
 
 ::: {.cell-output .cell-output-stdout}
 ```
-I taught the computer to get the image of Jesus from any pictue of Him
+I taught the computer to get the image of Jesus from any picture of Him
 ```
 :::
 :::

@@ -6,7 +6,6 @@ execute:
   keep-md: true
 ---
 
-## Row {height=fit}
 
 ```{python}
 
