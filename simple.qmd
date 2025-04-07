@@ -71,7 +71,7 @@ for contour in contours:
 plt.tight_layout()
 plt.show()
 
-print("I taught the computer to get the image of Jesus from any pictue of Him")
+print("I taught the computer to get the image of Jesus from any picture of Him")
 
 
 
