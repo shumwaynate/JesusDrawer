@@ -1,0 +1,78 @@
+---
+title: "Jesus Drawer"
+author: "Nathan Shumway"
+format: dashboard
+execute:
+  keep-md: true
+---
+
+
+```{python}
+
+#| echo: false
+#| output: true
+#| fig-width: 14
+#| fig-height: 4
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import pygame
+
+
+pygame.mixer.init()
+pygame.mixer.music.load("music.mp3")  # Replace with path to your file
+pygame.mixer.music.play() #just play the music once
+
+# Load grayscale PNG
+img = cv2.imread("image.png", cv2.IMREAD_GRAYSCALE)
+
+# Resize up to increase resolution (more pixels = more detail)
+high_res = cv2.resize(img, (300, 300), interpolation=cv2.INTER_CUBIC)
+
+# Optional: Apply slight blur to reduce speckle
+blurred = cv2.GaussianBlur(high_res, (3, 3), 0)
+
+# Use ultra-sensitive edge detection
+edges = cv2.Canny(blurred, 20, 80)
+
+# Or try adaptive threshold (swap this in place of edges)
+# edges = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+#                               cv2.THRESH_BINARY_INV, 11, 5)
+
+# Find all contours
+contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+# Plot comparison
+fig, axs = plt.subplots(1, 3)
+
+axs[0].imshow(img, cmap='gray')
+# axs[0].set_title("I taught the computer to get the image of Jesus from any pictue of Him")
+print("I taught the computer to get the image of Jesus from any pictue of Him")
+
+axs[1].imshow(edges, cmap='gray')
+# axs[1].set_title("Ultra-Detailed Edges")
+
+axs[2].set_xlim(0, 400)
+axs[2].set_ylim(0, 400)
+axs[2].invert_yaxis()
+axs[2].axis('off')
+# axs[2].set_title("Detailed Contours")
+
+for contour in contours:
+    x = [pt[0][0] for pt in contour]
+    y = [pt[0][1] for pt in contour]
+    axs[2].plot(x, y, color='black', linewidth=0.4)
+
+
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+
+```

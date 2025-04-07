@@ -1,0 +1,84 @@
+---
+title: "Jesus Drawer"
+author: "Nathan Shumway"
+format: dashboard
+execute:
+  keep-md: true
+---
+
+```{python}
+#I am wanting to do a quick project that I want your help walking through, I want the project to be in a qmd file that I can render as a dashboard html. This will have only one block in it though, I want it to have a play/pause button and a restart button. When it starts I want it to play music from a specific file and when it starts I want it to start drawing one stroke at a time a picture of Jesus Christ. 
+
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from IPython.display import HTML
+
+# Load and prepare image
+img = cv2.imread("image.png", cv2.IMREAD_GRAYSCALE)
+img = cv2.resize(img, (300, 300), interpolation=cv2.INTER_CUBIC)
+blurred = cv2.GaussianBlur(img, (3, 3), 0)
+edges = cv2.Canny(blurred, 20, 80)
+
+# Extract contours
+contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+points = []
+for c in contours:
+    for pt in c:
+        points.append(tuple(pt[0]))
+
+# Reduce number of points to speed up
+step_size = 10  # Increase step size to reduce frames
+points = points[::step_size]
+
+# Set up drawing canvas
+fig, ax = plt.subplots()
+ax.set_xlim(0, 300)
+ax.set_ylim(0, 300)
+ax.invert_yaxis()
+ax.axis("off")
+
+# Prepare original image as overlay (to fade in later)
+img_rgb = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+img_rgb = img_rgb.astype(np.float32) / 255.0
+overlay = ax.imshow(img_rgb, extent=[0, 300, 300, 0], alpha=0.0)
+
+# Pre-rendered frames (partial drawings)
+frame_images = []
+for i in range(1, len(points)+1):
+    # Create the frame image with only the first i points
+    frame_img = np.ones((300, 300, 3), dtype=np.float32) * 255  # White background
+    x_data, y_data = zip(*points[:i])  # Get first i points for each frame
+    frame_img = cv2.polylines(frame_img, [np.array(list(zip(x_data, y_data)), dtype=np.int32)], isClosed=False, color=(0, 0, 0), thickness=1)
+    frame_images.append(frame_img)
+
+# Animate the frames and apply fade effect
+fade_delay_frames = 60  # 5 seconds at 6 fps
+fade_duration_frames = 30
+total_draw_frames = len(frame_images)
+total_frames = total_draw_frames + fade_delay_frames + fade_duration_frames
+
+def update(frame):
+    if frame < total_draw_frames:
+        ax.imshow(frame_images[frame])
+    elif frame >= total_draw_frames + fade_delay_frames:
+        alpha = min((frame - total_draw_frames - fade_delay_frames) / fade_duration_frames, 1.0)
+        overlay.set_alpha(alpha)
+    
+    # Return a sequence (list) of artists
+    return [overlay]
+
+
+# Reduced FPS (from 12 to 6 for faster rendering)
+ani = FuncAnimation(fig, update, frames=total_frames, interval=1000/6, blit=True)
+
+# For Quarto or Jupyter output
+plt.close()
+HTML(ani.to_jshtml())
+
+
+```
+
+
