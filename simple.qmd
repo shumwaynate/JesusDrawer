@@ -20,9 +20,9 @@ import numpy as np
 import pygame
 
 
-pygame.mixer.init()
-pygame.mixer.music.load("music.mp3")  # Replace with path to your file
-pygame.mixer.music.play() #just play the music once
+# pygame.mixer.init()
+# pygame.mixer.music.load("music.mp3")  # Replace with path to your file
+# pygame.mixer.music.play() #just play the music once
 
 # Load grayscale PNG
 img = cv2.imread("image.png", cv2.IMREAD_GRAYSCALE)
